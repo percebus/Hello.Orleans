@@ -1,10 +1,17 @@
 using JCystems.MSLearn.OrleansURLShortener.Actor.Grains;
 
 WebApplicationBuilder oWebApplicationBuilder = WebApplication.CreateBuilder(args);
-oWebApplicationBuilder.Host.UseOrleans(siloBuilder =>
+oWebApplicationBuilder.Host.UseOrleans((hostBuilderContext, siloBuilder) =>
 {
-    siloBuilder.UseLocalhostClustering();
-    siloBuilder.AddMemoryGrainStorage("urls");
+    if (hostBuilderContext.HostingEnvironment.IsDevelopment())
+    {
+        siloBuilder.UseLocalhostClustering();
+        siloBuilder.AddMemoryGrainStorage("urls");
+    }
+    else
+    {
+        // siloBuilder.useKubernetesHosting // TODO
+    }
 });
 
 oWebApplicationBuilder.Services.AddEndpointsApiExplorer();
@@ -18,9 +25,9 @@ oWebApplication.UseHttpsRedirection();
 oWebApplication.MapGet("/", () => "Hello World!");
 
 oWebApplication.MapGet("/shorten",
-    async (IGrainFactory grains, HttpRequest request, string url) =>
+    async (IGrainFactory grainFactory, HttpRequest httpRequest, string url) =>
     {
-        var host = $"{request.Scheme}://{request.Host.Value}";
+        var host = $"{httpRequest.Scheme}://{httpRequest.Host.Value}";
 
         // Validate the URL query string.
         if (string.IsNullOrWhiteSpace(url) &&
@@ -38,25 +45,25 @@ oWebApplication.MapGet("/shorten",
                 .ToString("X");
 
         // Create and persist a grain with the shortened ID and full URL
-        var shortenerGrain = grains.GetGrain<IUrlShortenerGrain>(shortenedRouteSegment);
-        await shortenerGrain.SetUrl(url);
+        var oUrlShortenerGrain = grainFactory.GetGrain<IUrlShortenerGrain>(shortenedRouteSegment);
+        await oUrlShortenerGrain.SetUrl(url);
 
         // Return the shortened URL for later use
-        var resultBuilder = new UriBuilder(host)
+        var uriBuilder = new UriBuilder(host)
         {
             Path = $"/go/{shortenedRouteSegment}"
         };
 
-        return Results.Ok(resultBuilder.Uri);
+        return Results.Ok(uriBuilder.Uri);
     });
 
 oWebApplication.MapGet(
     "/go/{shortenedRouteSegment:required}",
-    async (IGrainFactory grains, string shortenedRouteSegment) =>
+    async (IGrainFactory grainFactory, string shortenedRouteSegment) =>
     {
         // Retrieve the grain using the shortened ID and url to the original URL        
-        var shortenerGrain = grains.GetGrain<IUrlShortenerGrain>(shortenedRouteSegment);
-        var url = await shortenerGrain.GetUrl();
+        var oUrlShortenerGrain = grainFactory.GetGrain<IUrlShortenerGrain>(shortenedRouteSegment);
+        var url = await oUrlShortenerGrain.GetUrl();
 
         return Results.Redirect(url);
     });

@@ -5,26 +5,26 @@
 
     public sealed class UrlShortenerGrain : Grain, IUrlShortenerGrain
     {
-        private IPersistentState<UrlDetails> State { get; }
+        private IPersistentState<UrlDetails> UrlDetailsPersistentState { get; }
 
         public UrlShortenerGrain(
             [PersistentState(
             stateName: "url",
             storageName: "urls")]
-            IPersistentState<UrlDetails> state) => State = state;
+            IPersistentState<UrlDetails> state) => UrlDetailsPersistentState = state;
 
         public async Task SetUrl(string fullUrl)
         {
-            this.State.State = new()
+            this.UrlDetailsPersistentState.State = new()
             {
                 ShortenedRouteSegment = this.GetPrimaryKeyString(),
                 FullUrl = fullUrl
             };
 
-            await this.State.WriteStateAsync();
+            await this.UrlDetailsPersistentState.WriteStateAsync();
         }
 
         public Task<string> GetUrl() =>
-            Task.FromResult(this.State.State.FullUrl);
+            Task.FromResult(this.UrlDetailsPersistentState.State.FullUrl);
     }
 }
