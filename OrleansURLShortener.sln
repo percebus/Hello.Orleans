@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34031.279
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrleansURLShortener", "dotnet\OrleansURLShortener\OrleansURLShortener.csproj", "{0E1B29AA-6AC0-473A-B570-9D5CFAB9F431}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0E48C014-42EB-4CAA-8F27-270089439A7B}"
+	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
+		.gitignore = .gitignore
+		Dockerfile = Dockerfile
+		HISTORY.md = HISTORY.md
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0E1B29AA-6AC0-473A-B570-9D5CFAB9F431}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E1B29AA-6AC0-473A-B570-9D5CFAB9F431}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E1B29AA-6AC0-473A-B570-9D5CFAB9F431}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E1B29AA-6AC0-473A-B570-9D5CFAB9F431}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F13E0097-8763-4DEE-9D35-6FE8CDB00E7F}
+	EndGlobalSection
+EndGlobal
